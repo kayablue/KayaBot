@@ -17,7 +17,6 @@ module.exports = {
             }
         }).then(res => {
             let user = res.data[0];
-            console.log(user);
             let osuEmbed = new Discord.MessageEmbed()
                 .setAuthor(`${user.username} | Player Info`, 'https://osu.ppy.sh/images/flags/'+ user.country +'.png', 'https://osu.ppy.sh/users/' + user.user_id)
                 .setThumbnail(`https://a.ppy.sh/${user.user_id}`)
