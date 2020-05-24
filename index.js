@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client({
     presence: {
         activity: {
-            name: "kayastats.github.io"
+            name: "k!help"
         }	
     }
 });
@@ -24,7 +24,7 @@ client.on('message', message => {
     let prefix = process.env.BOT_PREFIX;
     if (message.author.bot || !message.content.startsWith(prefix)) return;
 
-    const args = message.content.slice(prefix.length + 1).split(/ +/);
+    const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
     try {
         if (command != '') {

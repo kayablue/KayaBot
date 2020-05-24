@@ -8,11 +8,11 @@ module.exports = {
             //Code if no command specified
             let commandsInfo = [];
             message.client.commands.array().forEach(command => {
-                if (command.name != 'help') commandsInfo.push({ name: command.name, value: command.description });
+                if (command.name != 'help') commandsInfo.push({ name: "`" + command.name + "`", value: command.description, inline: true });
             });
             let helpEmbed = new Discord.MessageEmbed()
                 .setTitle("Available Commands")
-                .setDescription('Type gp help <command> to get more information')
+                .setDescription('Type k!help <command> to get more information')
                 .setColor("PURPLE")
                 .addFields(commandsInfo)
             message.channel.send(helpEmbed);
