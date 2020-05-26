@@ -21,13 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      env:
-        BOT_TOKEN: NzA5Nzg2NDg4NDgwNzI3MTIy.XsVDCQ.6CffxOo7rlRquLPVo_ztwBc4D0A
-        BOT_PREFIX: k!
-        HYPIXEL_API_KEY: 3f87c0c1-2273-4a3b-8c8a-91c01bb173ff
-        OSU_API_KEY: af6350a5d5f59a0ad0b09b264f85dc74d2e6488c
-        MONGO_USER: kayablue
-        MONGO_PASSWORD: tgVk48IzbyziKHZ3
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
