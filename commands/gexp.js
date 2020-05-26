@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { format } = require('date-fns');
 const axios = require('axios');
 require('dotenv').config()
@@ -22,7 +22,7 @@ module.exports = {
             })
 
             //Making the Embed
-            let gexpMessage = new Discord.MessageEmbed()
+            let gexpMessage = new MessageEmbed()
             .setTitle(`${requestedUser.profile.username} | Member Information`)
             .setColor("PURPLE")
             .addFields(

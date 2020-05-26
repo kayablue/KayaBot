@@ -35,23 +35,20 @@ module.exports = {
         //This code has been copied from kayastats so the variable names are fucked up
         function calculateExp(currentLevel, goalLevel, dailyXp, xpLeft) {
             if (currentLevel != goalLevel) {
-                level_exp = 10000;
-                sum_c = level_exp;
+                level_exp, sum_c = 10000;
                 for (var i = 1; i < currentLevel; i++) {
-                    level_exp = level_exp + 2500;
-                    sum_c = sum_c + level_exp;
+                    level_exp += 2500;
+                    sum_c += level_exp;
                 };
-                level_exp = 10000;
-                sum_c_plus_1 = level_exp;
+                level_exp, sum_c_plus_1 = 10000;
                 for (var i = 1; i <= currentLevel; i++) {
-                    level_exp = level_exp + 2500;
-                    sum_c_plus_1 = sum_c_plus_1 + level_exp;
+                    level_exp += 2500;
+                    sum_c_plus_1 += level_exp;
                 };
-                level_exp = 10000;
-                sum_g = level_exp;
+                level_exp, sum_g = 10000;
                 for (var i = 1; i < goalLevel; i++) {
-                    level_exp = level_exp + 2500;
-                    sum_g = sum_g + level_exp;
+                    level_exp += 2500;
+                    sum_g += level_exp;
                 };
                 xpNeeded = sum_g - sum_c - (sum_c_plus_1 - sum_c - xpLeft) - ((goalLevel - currentLevel - 1) * 2500);
                 daysNeeded = Math.round(xpNeeded / dailyXp);

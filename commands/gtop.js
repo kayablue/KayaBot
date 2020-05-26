@@ -1,11 +1,11 @@
-const Discord = require('discord.js');
+const { ReactionCollector, MessageEmbed } = require('discord.js');
 const axios = require('axios');
 require('dotenv').config()
 
 module.exports = {
     name: 'gtop',
     description: 'Get the top of the guild',
-    example: "```k!gtop RAWR -level```",
+    example: "```k!gtop <guildname> -level/lvl/ap/exp```",
     execute(requestMessage, args) {
         let sortBy = args.pop().toLowerCase();
 
@@ -20,7 +20,7 @@ module.exports = {
                 let i, j, page, chunk = 10;
                 let pages = [];
                 //Option check
-                if (sortBy == '-level') {
+                if (sortBy == '-level' || sortBy == '-lvl') {
                     for (i=0,j=sortedMembers.length; i<j; i+=chunk) {
                         page = sortedMembers.slice(i,i+chunk).map(member => `${sortedMembers.findIndex((mem) => mem == member) + 1}. ${member.profile.username}: **${member.profile.level}**`);
                         pages.push(page);
@@ -47,7 +47,7 @@ module.exports = {
                 //Making Embed
                 function makeEmbed(sortCriteria) {
                     try {
-                        return new Discord.MessageEmbed()
+                        return new MessageEmbed()
                         .setTitle(`${res.data.name} Top | Guild Info`)
                         .setColor("PURPLE")
                         .addField('Guild Top By ' + sortCriteria, pages[i].join("\n"))
@@ -61,25 +61,24 @@ module.exports = {
                 requestMessage.channel.send(levelEmbed)
                 .then(embedMessage => {
                     async function pagesInit (embedMessage, requestMessage) {
-                        //I like async (no)
-                        await embedMessage.react("⏪")
-                        await embedMessage.react("⬅")
-                        await embedMessage.react("➡")
-                        await embedMessage.react("⏩")
-                        
+                    //I like async (no)
+                    await embedMessage.react("⏪")
+                    await embedMessage.react("⬅")
+                    await embedMessage.react("➡")
+                    await embedMessage.react("⏩")
 
-                        //Initializing The Pagination Using ReactionCollector
-                        let pagination = new Discord.ReactionCollector(embedMessage, (args, collection) => {
-                            emoji = args._emoji.name;
-                            if (emoji.search(/[➡⬅⏩⏪]/i) != -1) return true;    
+
+                    //Initializing The Pagination Using ReactionCollector
+                    let pagination = new ReactionCollector(embedMessage, (args) => {
+                        emoji = args._emoji.name;
+                        if (emoji.search(/[➡⬅⏩⏪]/i) != -1) return true;    
                         }, {
                             time: 60000,
                             dispose: true
                         })
-
-                        //Telling what clicking each reaction does
-                        let paginationCheck = (emoji, user) => {
-                            if (user.username == embedMessage.author.username || user.username != requestMessage.author.username) return;
+                    //Telling what clicking each reaction does
+                    let paginationCheck = (emoji, user) => {
+                        if (user.username == embedMessage.author.username || user.username != requestMessage.author.username) return;
                             emoji = emoji._emoji.name;
                             if (emoji == '➡') { 
                                 i = i != pages.length - 1 ? i + 1: i;
@@ -99,14 +98,12 @@ module.exports = {
                                 embedMessage.edit(levelEmbed);
                             }
                         }
-
                         //Events
                         pagination.on('collect', (reaction, user) => paginationCheck(reaction, user));
                         pagination.on('remove', (reaction, user) => paginationCheck(reaction, user));
-    
+
                         pagination.on('end', () => embedMessage.edit('Session Ended'))
                     }
-
                     pagesInit(embedMessage, requestMessage);
                 });
             })

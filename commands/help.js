@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'help',
@@ -10,7 +10,7 @@ module.exports = {
             message.client.commands.array().forEach(command => {
                 if (command.name != 'help') commandsInfo.push({ name: "`" + command.name + "`", value: command.description, inline: true });
             });
-            let helpEmbed = new Discord.MessageEmbed()
+            let helpEmbed = new MessageEmbed()
                 .setTitle("Available Commands")
                 .setDescription('Type k!help <command> to get more information')
                 .setColor("PURPLE")
@@ -18,10 +18,9 @@ module.exports = {
             message.channel.send(helpEmbed);
         }
         else {
-            //Code if there's something like 'gp help guild'
-            console.log(message.client.commands);
+            //Code if there's something like 'k!help guild'
             let command = message.client.commands.get(args[0])
-            let helpEmbed = new Discord.MessageEmbed()
+            let helpEmbed = new MessageEmbed()
                 .setTitle(`Command ${command.name}`)
                 .addFields(
                     { name: "Description", value: command.description },
