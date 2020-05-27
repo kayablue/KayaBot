@@ -1,42 +1,61 @@
+//This is my first time using classes
 const Discord = require("discord.js");
-const client = new Discord.Client({
-    presence: {
-        activity: {
-            name: "k!help"
-        }	
-    }
-});
-
+require('./db/db');
 require('dotenv').config();
 
 //Setting Up Commands Dir
 const { readdirSync } = require('fs');
-client.commands = new Discord.Collection();
-const commandDirs = readdirSync('./commands').filter(file => file.endsWith('.js'));
-commandDirs.forEach(command => client.commands.set(command.replace('.js', ''), require(`./commands/${command}`)));
 
-client.on('ready', () => {
-    console.log("Ready");
-});
-
-client.on('message', message => {
-    let prefix = process.env.BOT_PREFIX;
-    if (message.author.bot || !message.content.startsWith(prefix)) return;
-
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
-    try {
-        if (command != '') {
-            client.commands.get(command).execute(message, args);
-        }
-        else {
-            client.commands.get('help').execute(message, args);
-        }
+class Commands extends Discord.Collection {
+    constructor(options) {
+        super()
+        this.commandsPath = options.commandsPath;
+        this.commandDirs = readdirSync(this.commandsPath).filter(file => file.endsWith('.js'))
+        this.commandDirs.forEach(command => {this.set(command.replace('.js', ''), require(`${this.commandsPath}/${command}`))})
     }
-    catch (error) {
-        console.error(error);
-        message.channel.send("An error occured: \n" + error);
-    }
-});
+}
 
-client.login(process.env.BOT_TOKEN);
+//Main Class
+class KayaBot extends Discord.Client {
+    constructor(options) {
+        super(options);
+        this.prefix = options.prefix;
+        this.commands = new Commands({commandsPath: options.commandsPath})
+    }
+
+    login(token) {
+        this._setupClient()
+        return super.login(token);
+    }
+
+    _setupClient() {
+        this.on('message', async message => {
+            if (message.author.bot || !message.content.startsWith(this.prefix)) return;
+            
+            const args = message.content.slice(this.prefix.length).split(/ +/);
+            const command = args.shift().toLowerCase();
+            try {
+                if (command != '') {
+                    this.commands.get(command).execute(message, args);
+                }
+                else {
+                    this.commands.get('help').execute(message, args);
+                }
+            } catch (error) {
+                console.error(error);
+                message.channel.send("No such command :c");
+            }
+        });
+        this.on('ready', () => console.log('Ready'))
+    }
+}
+
+new KayaBot({
+    presence: {
+        activity: {
+            name: "k!help"
+        }	
+    }, 
+    prefix: process.env.BOT_PREFIX,
+    commandsPath: './commands'
+}).login(process.env.BOT_TOKEN)

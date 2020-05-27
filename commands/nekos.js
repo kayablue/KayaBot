@@ -1,22 +1,16 @@
-const { MessageEmbed } = require('discord.js');
+const KayaEmbed = require('../structures/kayaEmbed')
+const Command = require('../structures/command');
 const nekoClient = require('nekos.life');
 const { nsfw } = new nekoClient();
-require('dotenv').config()
 
-module.exports = {
-    name: 'nekos',
-    description: 'You know what it does',
-    example: "```k!nekos <tags>```",
-    execute(message, args) {
-        if (message.channel.nsfw) {
-            nsfw.neko().then(data => { 
-                message.channel.send(new MessageEmbed({
-                    image: {
-                        url: data.url
-                    },
-                    color: 'PURPLE'
-                })) 
-            })
-        } else message.channel.send('Only available in nsfw channels!')
-    }
-}
+module.exports = new Command('nekos', 'Get your neko image', '<tags>', (message, args) => {
+    if (message.channel.nsfw) {
+        nsfw.neko().then(data => { 
+            message.channel.send(new KayaEmbed({
+                image: {
+                    url: data.url
+                }
+            })) 
+        })
+    } else message.channel.send('Only available in nsfw channels!')
+})

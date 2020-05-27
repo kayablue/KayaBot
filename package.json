@@ -15,7 +15,7 @@
     "mongoose": "^5.9.14",
     "nekos.life": "^2.0.7",
     "nodemon": "^2.0.4",
-    "pornhub.js": "^0.2.2"
+    "shoukaku": "^1.4.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"
