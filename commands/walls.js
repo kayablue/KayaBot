@@ -2,7 +2,7 @@ const KayaEmbed = require('../structures/kayaEmbed')
 const Command = require('../structures/command.js');
 const axios = require('axios');
 
-module.exports = new Command('walls', 'Get player The Walls stats', '<player>', (message, args) => {
+module.exports = new Command('walls', 'Get player The Walls stats', '<player>', 'hypixel', (message, args) => {
     axios.get("https://api.slothpixel.me/api/players/" + args.join(" ")).then(res => {
         let walls = res.data.stats.Walls;
 

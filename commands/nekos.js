@@ -3,7 +3,7 @@ const Command = require('../structures/command');
 const nekoClient = require('nekos.life');
 const { nsfw } = new nekoClient();
 
-module.exports = new Command('nekos', 'Get your neko image', '<tags>', (message, args) => {
+module.exports = new Command('nekos', 'Get your neko image', '<tags>', 'nsfw', (message, args) => {
     if (message.channel.nsfw) {
         nsfw.neko().then(data => { 
             message.channel.send(new KayaEmbed({

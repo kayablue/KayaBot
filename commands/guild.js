@@ -3,7 +3,7 @@ const Command = require('../structures/command')
 const { format } = require('date-fns');
 const axios = require('axios');
 
-module.exports = new Command('guild', 'Get the info of the guild', 'RAWR', (message, args) => {
+module.exports = new Command('guild', 'Get the info of the guild', 'RAWR', 'hypixel', (message, args) => {
     let getMembers = (uuid) => {
         axios.get("https://api.slothpixel.me/api/guilds/" + uuid + "?populatePlayers=true")
         .then(res => {

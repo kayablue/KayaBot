@@ -1,26 +1,15 @@
 //This is my first time using classes
-const Discord = require("discord.js");
+const { Client } = require("discord.js");
+const CommandManager = require('./structures/commandManager');
 require('./db/db');
 require('dotenv').config();
 
-//Setting Up Commands Dir
-const { readdirSync } = require('fs');
-
-class Commands extends Discord.Collection {
-    constructor(options) {
-        super()
-        this.commandsPath = options.commandsPath;
-        this.commandDirs = readdirSync(this.commandsPath).filter(file => file.endsWith('.js'))
-        this.commandDirs.forEach(command => {this.set(command.replace('.js', ''), require(`${this.commandsPath}/${command}`))})
-    }
-}
-
 //Main Class
-class KayaBot extends Discord.Client {
+class KayaBot extends Client {
     constructor(options) {
         super(options);
         this.prefix = options.prefix;
-        this.commands = new Commands({commandsPath: options.commandsPath})
+        this.commands = new CommandManager(options.commandsPath)
     }
 
     login(token) {
@@ -29,7 +18,7 @@ class KayaBot extends Discord.Client {
     }
 
     _setupClient() {
-        this.on('message', async message => {
+        this.on('message', message => {
             if (message.author.bot || !message.content.startsWith(this.prefix)) return;
             
             const args = message.content.slice(this.prefix.length).split(/ +/);
@@ -50,6 +39,7 @@ class KayaBot extends Discord.Client {
     }
 }
 
+//Starting The Bot
 new KayaBot({
     presence: {
         activity: {

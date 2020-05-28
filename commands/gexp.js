@@ -3,7 +3,7 @@ const Command = require('../structures/command');
 const { format } = require('date-fns');
 const axios = require('axios');
 
-module.exports = new Command('gexp', 'Gets gexp stats of player', 'Kawaiinex', (message, args) => {
+module.exports = new Command('gexp', 'Gets gexp stats of player', 'Kawaiinex', 'hypixel', (message, args) => {
     axios.get("https://api.slothpixel.me/api/guilds/" + args[0] + "?populatePlayers=true")
     .then(res => {
 

@@ -3,7 +3,11 @@ const { Types } = require('mongoose');
 //Get our models
 const models = require('../db/models.js')
 
-module.exports = new Command('osuset', 'Set your osu! username to not to mention it everytime you white osu! related commands', '<osu!nickname>', (message, args) => {
+module.exports = new Command('osuset', 
+    'Set your osu! username to not to mention it everytime you white osu! related commands', 
+    '<osu!nickname>',
+    'osu',
+    (message, args) => {
     //Database is already connected in osu-models.js
     var osuset = new models.osusetModel({
         _id: new Types.ObjectId(),

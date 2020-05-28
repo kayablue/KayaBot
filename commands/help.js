@@ -1,24 +1,34 @@
 const KayaEmbed = require('../structures/kayaEmbed')
 const Command = require('../structures/command')
+const CommandManager = require('../structures/commandManager');
 
-module.exports = new Command('help', 'Shows what the command do or list of all commands', '', (message, args) => {
+module.exports = new Command('help', 'Shows what the command do or list of all commands', '', 'bot', (message, args) => {
     if (!args.length) {
         //Code if no command specified
-        let commandsInfo = [];
-        message.client.commands.array().forEach(command => {
-            if (command.name != 'help') commandsInfo.push({ name: "`" + command.name + "`", value: command.description, inline: true });
-        });
-        let helpEmbed = new KayaEmbed({
-            title: 'Available Commands',
-            description: 'Type k!help <command> to get more information',
-            fields: commandsInfo
+        let categories = ['hypixel', 'bot', 'nsfw', 'osu'];
+        let commandsFormatted = 'Type k!help <command> to get the info about command \n\n';
+
+        function ucFirst(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1)
+        }
+        function checkCategory(category) {
+            return commandsFormatted.filter(value => value.category == category).map(value => value.commands)
+        }
+
+        categories.forEach(category => {
+            let command = message.client.commands.array().filter(command => command.category == category).map(value => ' `' + value.name + '`');
+            commandsFormatted += `‣ **${ucFirst(category)}**:${command}\n`
         })
-        message.channel.send(helpEmbed);
+
+        message.channel.send(new KayaEmbed({
+            title: `Available Commands`,
+            description: commandsFormatted
+        }))
     }
     else {
         //Code if there's something like 'k!help guild'
         let command = message.client.commands.get(args[0])
-        let helpEmbed = new KayaEmbed({
+        new KayaEmbed({
             title: `Command ${command.name}`,
             color: "#FFC0CB",
             fields: [

@@ -3,7 +3,7 @@ const Command = require('../structures/command')
 const axios = require('axios');
 const models = require('../db/models.js')
 
-module.exports = new Command('osu', 'Shows stats of the osu! player', '<nickname>', async (message, args) => {
+module.exports = new Command('osu', 'Shows stats of the osu! player', '<nickname>', 'osu', async (message, args) => {
     async function checkDB(discordId) {
         if (args.length == 0) {
             return new Promise((resolve, reject) => {
