@@ -11,7 +11,8 @@ models.osusetModel = model('osuset', osusetSchema, 'osuset');
 const welcomeSchema = new Schema({
     _id: String,
     message: String, 
-    channel: String
+    channel: String,
+    default_role: String
 })
 models.welcomeModel = model('welcome', welcomeSchema, 'welcome')
 
