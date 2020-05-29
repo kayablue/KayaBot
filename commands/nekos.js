@@ -1,5 +1,5 @@
-const KayaEmbed = require('../structures/kayaEmbed')
-const Command = require('../structures/command');
+const KayaEmbed = require('../modules/kayaEmbed')
+const Command = require('../modules/command');
 const nekoClient = require('nekos.life');
 const { nsfw } = new nekoClient();
 

@@ -1,5 +1,5 @@
-const Pagination = require('../structures/pagination')
-const Command = require('../structures/command')
+const Pagination = require('../modules/pagination')
+const Command = require('../modules/command')
 const axios = require('axios');
 
 module.exports = new Command('gtop', 'Get the top of the guild', '<guildname> -level/lvl/ap/exp/xp', 'hypixel', (message, args) => {

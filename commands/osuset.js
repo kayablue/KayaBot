@@ -1,4 +1,4 @@
-const Command = require('../structures/command')
+const Command = require('../modules/command')
 const { Types } = require('mongoose');
 //Get our models
 const models = require('../db/models.js')

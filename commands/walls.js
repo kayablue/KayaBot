@@ -1,5 +1,5 @@
-const KayaEmbed = require('../structures/kayaEmbed')
-const Command = require('../structures/command.js');
+const KayaEmbed = require('../modules/kayaEmbed')
+const Command = require('../modules/command.js');
 const axios = require('axios');
 
 module.exports = new Command('walls', 'Get player The Walls stats', '<player>', 'hypixel', (message, args) => {

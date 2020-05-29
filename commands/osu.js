@@ -1,5 +1,5 @@
-const KayaEmbed = require('../structures/kayaEmbed')
-const Command = require('../structures/command')
+const KayaEmbed = require('../modules/kayaEmbed')
+const Command = require('../modules/command')
 const axios = require('axios');
 const models = require('../db/models.js')
 

@@ -1,8 +1,10 @@
 //This is my first time using classes
 const { Client } = require("discord.js");
-const CommandManager = require('./structures/commandManager');
+const CommandManager = require('./modules/commandManager');
+const WelcomeListener = require('./modules/welcomeListener');
 require('./db/db');
 require('dotenv').config();
+
 
 //Main Class
 class KayaBot extends Client {
@@ -10,6 +12,7 @@ class KayaBot extends Client {
         super(options);
         this.prefix = options.prefix;
         this.commands = new CommandManager(options.commandsPath)
+        this.welcomeListener = new WelcomeListener()
     }
 
     login(token) {
@@ -35,6 +38,12 @@ class KayaBot extends Client {
                 message.channel.send("No such command :c");
             }
         });
+
+        //Listener for k!welcome
+        this.on('guildMemberAdd', member => {
+            this.welcomeListener.listen(member);
+        })
+
         this.on('ready', () => console.log('Ready'))
     }
 }

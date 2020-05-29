@@ -1,11 +1,11 @@
-const KayaEmbed = require('../structures/kayaEmbed')
-const Command = require('../structures/command')
-const CommandManager = require('../structures/commandManager');
+const KayaEmbed = require('../modules/kayaEmbed')
+const Command = require('../modules/command')
+const CommandManager = require('../modules/commandManager');
 
 module.exports = new Command('help', 'Shows what the command do or list of all commands', '', 'bot', (message, args) => {
     if (!args.length) {
         //Code if no command specified
-        let categories = ['hypixel', 'bot', 'nsfw', 'osu'];
+        let categories = ['hypixel', 'minecraft', 'bot', 'nsfw', 'osu'];
         let commandsFormatted = 'Type k!help <command> to get the info about command \n\n';
 
         function ucFirst(word) {
@@ -28,7 +28,7 @@ module.exports = new Command('help', 'Shows what the command do or list of all c
     else {
         //Code if there's something like 'k!help guild'
         let command = message.client.commands.get(args[0])
-        new KayaEmbed({
+        let helpEmbed = new KayaEmbed({
             title: `Command ${command.name}`,
             color: "#FFC0CB",
             fields: [

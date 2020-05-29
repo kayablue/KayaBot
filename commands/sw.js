@@ -1,5 +1,5 @@
-const KayaEmbed = require('../structures/kayaEmbed')
-const Command = require('../structures/command')
+const KayaEmbed = require('../modules/kayaEmbed')
+const Command = require('../modules/command')
 const axios = require('axios');
 
 module.exports = new Command('sw', "Get Player's Hypixel SkyWars Stats", '<playername>', 'hypixel', async (message, args) => {

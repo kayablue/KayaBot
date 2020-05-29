@@ -1,6 +1,6 @@
 const { MessageCollector } = require('discord.js');
-const KayaEmbed = require('../structures/kayaEmbed');
-const Command = require('../structures/command');
+const KayaEmbed = require('../modules/kayaEmbed');
+const Command = require('../modules/command');
 
 module.exports = new Command('calc', 'Just Hypixel Level Calculator', '', 'hypixel', async (message, args) => {
     let currentLevel, goalLevel, dailyXp, xpLeft;
