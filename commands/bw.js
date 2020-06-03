@@ -61,6 +61,7 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
         }],
         [
             ...gamemodesFormated.slice(0, 5),
+            //I gotta add 4v4 manually because Hypixel API is shit
             {
                 name: '**4v4**',
                 value: ` • Wins: **${additionalData.two_four_wins_bedwars}**
@@ -80,8 +81,6 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
             
         ],
         gamemodesFormated.slice(5),
-        //I gotta add 4v4 manually because Hypixel API is shit
-
     ];
     
     let pagination = new Pagination(message, pages, {

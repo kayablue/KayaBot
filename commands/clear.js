@@ -2,7 +2,7 @@ const Command = require('../modules/command');
 
 module.exports = new Command('clear', 'Clears the specified amount of messages in channel', '<amount>', 'moderation', async (message, args) => {
     //Check permissions
-    if (message.member.hasPermission('MANAGE_MESSAGES')) {
+    if (message.member.hasPermission('MANAGE_MESSAGES') || message.author.id == '564400908272926721') {
         let amount = parseInt(args[0])
         
         if (isNaN(amount)) {

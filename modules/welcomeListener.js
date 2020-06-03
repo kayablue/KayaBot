@@ -11,7 +11,6 @@ class WelcomeListener {
                 welcomeChannel.send(res[0].message.replace('{member}', `<@${member.id}>`))
             }
             if (res[0].default_role != null) member.roles.add(res[0].default_role)
-            
         })
     }
 }

@@ -1,7 +1,8 @@
 //This is my first time using classes
-const { Client } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const CommandManager = require('./modules/commandManager');
 const WelcomeListener = require('./modules/welcomeListener');
+const QueueManager = require('./modules/queueManager')
 require('./db/db');
 require('dotenv').config();
 
@@ -13,6 +14,7 @@ class KayaBot extends Client {
         this.prefix = options.prefix;
         this.commands = new CommandManager(options.commandsPath)
         this.welcomeListener = new WelcomeListener()
+        this.musicQueue = new QueueManager();
     }
 
     login(token) {
