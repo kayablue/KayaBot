@@ -14,7 +14,7 @@ class KayaBot extends Client {
         this.prefix = options.prefix;
         this.commands = new CommandManager(options.commandsPath)
         this.welcomeListener = new WelcomeListener()
-        this.musicQueue = new QueueManager();
+        this.queue = new Map();
     }
 
     login(token) {
@@ -51,7 +51,7 @@ class KayaBot extends Client {
 }
 
 //Starting The Bot
-new KayaBot({
+let kayaBot = new KayaBot({
     presence: {
         activity: {
             name: "k!help"

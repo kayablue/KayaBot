@@ -1,29 +1,18 @@
 const Command = require('../modules/command')
-const { get } = require('axios')
+const KayaEmbed = require('../modules/kayaEmbed')
 
-module.exports = new Command('queue', 'displays current queue', '', 'music', async (message, args) => {
-    if (message.member.voice.channel) {
-        let queue =  message.client.musicQueue.queue.get(message.guild.id)
-        if (queue != undefined) { 
+module.exports = new Command('queue', 'Displays current queue', '', 'music', async (message, args) => {
+    const serverQueue = message.client.queue.get(message.guild.id);
 
-            let counter = 0;
-            let queueFormatted = await Promise.all(queue.map(async url => {
-                let res = await get('http://www.youtube.com/oembed', {
-                    params: {
-                        url: url,
-                        format: 'json'
-                    }
-                })
-                counter++;
-                console.log(res.data.title)
-                console.log(counter);
-                return "**" + counter + '.** ' + res.data.title + "\n"
-            }));
+    if (!serverQueue) return message.reply("There is nothing playing.").catch(console.error);
 
-            console.log(queueFormatted)
-            message.channel.send(queueFormatted.join(''))
-        } else message.channel.send('Queue is empty')
-        
-    } else message.reply('join voice channel, please')
-    
+    let queueEmbed = new KayaEmbed()
+      .setTitle("EvoBot Music Queue")
+      .setDescription(serverQueue.songs.map((song, index) => `${index + 1}. ${song.title}`))
+
+    queueEmbed.setTimestamp();
+    if (queueEmbed.description.length >= 2048)
+        queueEmbed.description =
+          queueEmbed.description.substr(0, 2007) + "\nQueue is larger than character limit...";
+    return message.channel.send(queueEmbed);
 })

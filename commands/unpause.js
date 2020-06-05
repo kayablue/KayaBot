@@ -1,7 +1,5 @@
 const Command = require('../modules/command')
 
-module.exports = new Command('unpause', 'unpauses the music', '', 'music', (message) => {
-    if (message.member.voice.channel) {
-        message.client.musicQueue.unpause()
-    } else message.channel.send('You\'re not even in voice channel to unpause')
+module.exports = new Command('unpause', 'Unpauses current playing track\nIs an alias for resume', '', 'music', (message) => { 
+    message.client.commands.get('resume').execute(message)
 })

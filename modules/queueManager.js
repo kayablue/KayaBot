@@ -1,82 +1,125 @@
-const ytdl = require('ytdl-core-discord');
-const StreamSettingsManager = require('./music/streamSettingsManager')
-const { EventEmitter } = require('events')
+const ytdlDiscord = require("ytdl-core-discord");
 
+module.exports = {
+  async play(song, message) {
+    const PRUNING = false;
+    const queue = message.client.queue.get(message.guild.id);
 
-class QueueManager extends EventEmitter {
-    constructor() {
-        super()
-
-        this.queue = new Map();
-        this.settings = new StreamSettingsManager()
+    if (!song) {
+      queue.channel.leave();
+      message.client.queue.delete(message.guild.id);
+      return queue.textChannel.send("🚫 Music queue ended.").catch(console.error);
     }
 
-    async start(songUrl, voiceChannel) {
-        this.connection = await voiceChannel.join();
+    try {
+      var stream = await ytdlDiscord(song.url, { highWaterMark: 1 << 25 });
+    } catch (error) {
+      if (queue) {
+        queue.songs.shift();
+        module.exports.play(queue.songs[0], message);
+      }
 
-
-        this.connectionOptions =  { type: 'opus', bitrate: 192000, quality: 'highestaudio', volume: this.settings.getVolume(voiceChannel.guild.id) }
-        this.dispatcher = this.connection.play(await ytdl(songUrl), this.connectionOptions);
-        //Setup emitter events
-        this._startLogging(this.dispatcher, voiceChannel);
-        this._setupQueue(voiceChannel);
-        
-       
-        // Sets the value depending on if the queue exists or not
-        let currentQueue = this.queue.get(voiceChannel.guild.id)
-        if (currentQueue == undefined) currentQueue = [ songUrl ]
-        else currentQueue[0] = songUrl
-        this.queue.set(voiceChannel.guild.id, currentQueue)  
-    }
-    //Private Methods Here
-    _startLogging(dispatcher, voiceChannel) {
-        dispatcher.on('start', () => {
-            console.log('Playing!');
-        });
-        dispatcher.on('speaking', value => {
-            if (!value) {
-                let currentQueue = this.queue.get(voiceChannel.guild.id)
-                if (currentQueue.length != 1) {
-                    this.queue.set(voiceChannel.guild.id, currentQueue.slice(1))
-                    this.emit('next')
-                } else this.stopPlaying(voiceChannel)
-            }
-        })
-
-        dispatcher.on('debug', info => console.log(info))
-        dispatcher.on('error', error => console.log(error));
-    }
-    _setupQueue(voiceChannel) {
-        this.on('next', async () => {
-            let stream = await ytdl(this.queue.get(voiceChannel.guild.id)[0])
-            
-
-            this.dispatcher.play(stream, { volume: this.settings.getVolume(voiceChannel.guild.id)});
-        })
+      if (error.message.includes("copyright")) {
+        return message.channel
+          .send("⛔ A video could not be played due to copyright protection ⛔")
+          .catch(console.error);
+      } else {
+        console.error(error);
+      }
     }
 
-    //Public Methods Here
-    addQueue(songUrl, message) {
-        console.log(this.dispatcher.streams.broadcast)
-        this.queue.set(message.guild.id, [ ...this.queue.get(message.guild.id), songUrl ])
-    }
-    skipSong(message) {
-        let currentQueue = this.queue.get(message.guild.id)
-        if (currentQueue.length != 1) {
-            this.queue.set(message.guild.id, currentQueue.slice(1))
-            this.emit('next')
-        } else this.stopPlaying(message)
-    }
-    pause() {
-        this.dispatcher.pause(true);
-    }
-    unpause() {
-        this.dispatcher.resume();
-    }
-    stopPlaying(message) { //This can be not only message but voiceChannel too
-        this.queue.delete(message.guild.id)
-        this.connection.disconnect();
-    }
-}
+    const dispatcher = queue.connection
+      .play(stream, { type: "opus" })
+      .on("finish", () => {
+        if (collector && !collector.ended) collector.stop();
 
-module.exports = QueueManager;
+        if (PRUNING && playingMessage && !playingMessage.deleted)
+          playingMessage.delete().catch(console.error);
+
+        if (queue.loop) {
+          // if loop is on, push the song back at the end of the queue
+          // so it can repeat endlessly
+          let lastSong = queue.songs.shift();
+          queue.songs.push(lastSong);
+          module.exports.play(queue.songs[0], message);
+        } else {
+          // Recursively play the next song
+          queue.songs.shift();
+          module.exports.play(queue.songs[0], message);
+        }
+      })
+      .on("error", (err) => {
+        console.error(err);
+        queue.songs.shift();
+        module.exports.play(queue.songs[0], message);
+      });
+    dispatcher.setVolumeLogarithmic(queue.volume / 100);
+
+    try {
+      var playingMessage = await queue.textChannel.send(`🎶 Started playing: **${song.title}** ${song.url}`);
+      await playingMessage.react("⏭");
+      await playingMessage.react("⏯");
+      await playingMessage.react("🔁");
+      await playingMessage.react("⏹");
+    } catch (error) {
+      console.error(error);
+    }
+
+    const filter = (reaction, user) => user.id !== message.client.user.id;
+    var collector = playingMessage.createReactionCollector(filter, {
+      time: song.duration > 0 ? song.duration * 1000 : 600000
+    });
+
+    collector.on("collect", (reaction, user) => {
+      // Stop if there is no queue on the server
+      if (!queue) return;
+
+      switch (reaction.emoji.name) {
+        case "⏭":
+          queue.connection.dispatcher.end();
+          queue.textChannel.send(`${user} ⏩ skipped the song`).catch(console.error);
+          collector.stop();
+          break;
+
+        case "⏯":
+          if (queue.playing) {
+            queue.playing = !queue.playing;
+            queue.connection.dispatcher.pause();
+            queue.textChannel.send(`${user} ⏸ paused the music.`).catch(console.error);
+          } else {
+            queue.playing = !queue.playing;
+            queue.connection.dispatcher.resume();
+            queue.textChannel.send(`${user} ▶ resumed the music!`).catch(console.error);
+          }
+          reaction.users.remove(user);
+          break;
+
+        case "🔁":
+          queue.loop = !queue.loop;
+          queue.textChannel.send(`Loop is now ${queue.loop ? "**on**" : "**off**"}`).catch(console.error);
+          reaction.users.remove(user);
+          break;
+
+        case "⏹":
+          queue.songs = [];
+          queue.textChannel.send(`${user} ⏹ stopped the music!`).catch(console.error);
+          try {
+            queue.connection.dispatcher.end();
+          } catch (error) {
+            console.error(error);
+            queue.connection.disconnect();
+          }
+          collector.stop();
+          break;
+
+        default:
+          reaction.users.remove(user);
+          break;
+      }
+    });
+
+    collector.on("end", () => {
+      playingMessage.reactions.removeAll();
+    });
+  }
+};
