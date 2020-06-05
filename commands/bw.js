@@ -11,7 +11,7 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
             name: args.join(' ')
         }
     });
-    additionalData = additionalData.data.player.stats.Bedwars;
+    let additionalDataBw = additionalData.data.player.stats.Bedwars;
     //Sloth means that it uses slothpixel API
     let slothBw = res.data.stats.BedWars;
     let slothGamemodes = [ 
@@ -35,6 +35,7 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
                 • Curent Winstreak: **${gamemode.winstreak}**
                 • Final Kills: **${gamemode.final_kills}**
                 • Final Deaths: **${gamemode.final_deaths}**
+                • Final K/D: **${Math.round((gamemode.final_kills / gamemode.final_deaths + Number.EPSILON) * 100) / 100}**
                 • Games Played: **${gamemode.games_played}**
                 • Beds Broken: **${gamemode.beds_broken}**
                 `.replace(/undefined|NaN/gi, '0'), 
@@ -46,6 +47,7 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
         [{
             name: '**General Info**',
             value: ` • Wins: **${slothBw.wins}**
+                • Level: **${additionalData.data.player.achievements.bedwars_level}**
                 • Kills: **${slothBw.kills}**
                 • Loses: **${slothBw.losses}**
                 • K/D: **${slothBw.k_d}**
@@ -64,17 +66,18 @@ module.exports = new Command('bw', 'Get Player BedWars Stats', '<player>', 'hypi
             //I gotta add 4v4 manually because Hypixel API is shit
             {
                 name: '**4v4**',
-                value: ` • Wins: **${additionalData.two_four_wins_bedwars}**
-                • Kills: **${additionalData.two_four_kills_bedwars}**
-                • Loses: **${additionalData.two_four_losses_bedwars}**
-                • K/D: **${Math.round((additionalData.two_four_kills_bedwars / additionalData.two_four_deaths_bedwars + Number.EPSILON) * 100) / 100}**
-                • W/L: **${Math.round((additionalData.two_four_wins_bedwars / additionalData.two_four_losses_bedwars + Number.EPSILON) * 100) / 100}**
-                • Deaths: **${additionalData.two_four_deaths_bedwars}**
-                • Curent Winstreak: **${additionalData.two_four_winstreak}**
-                • Final Kills: **${additionalData.two_four_final_kills_bedwars}**
-                • Final Deaths: **${additionalData.two_four_final_deaths_bedwars}**
-                • Games Played: **${additionalData.two_four_games_played_bedwars}**
-                • Beds Broken: **${additionalData.two_four_beds_broken_bedwars}**
+                value: ` • Wins: **${additionalDataBw.two_four_wins_bedwars}**
+                • Kills: **${additionalDataBw.two_four_kills_bedwars}**
+                • Loses: **${additionalDataBw.two_four_losses_bedwars}**
+                • K/D: **${Math.round((additionalDataBw.two_four_kills_bedwars / additionalDataBw.two_four_deaths_bedwars + Number.EPSILON) * 100) / 100}**
+                • W/L: **${Math.round((additionalDataBw.two_four_wins_bedwars / additionalDataBw.two_four_losses_bedwars + Number.EPSILON) * 100) / 100}**
+                • Deaths: **${additionalDataBw.two_four_deaths_bedwars}**
+                • Curent Winstreak: **${additionalDataBw.two_four_winstreak}**
+                • Final Kills: **${additionalDataBw.two_four_final_kills_bedwars}**
+                • Final Deaths: **${additionalDataBw.two_four_final_deaths_bedwars}**
+                • Final K/D: **${Math.round((additionalDataBw.two_four_final_kills_bedwars / additionalDataBw.two_four_final_deaths_bedwars + Number.EPSILON) * 100) / 100}**
+                • Games Played: **${additionalDataBw.two_four_games_played_bedwars}**
+                • Beds Broken: **${additionalDataBw.two_four_beds_broken_bedwars}**
                 `.replace(/undefined/gi, '0'),
                 inline: true
             }

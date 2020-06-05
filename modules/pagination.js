@@ -61,7 +61,11 @@ class Pagination {
         pagination.on('collect', (reaction, user) => this._paginationCheck(reaction, user, embedMessage));
         pagination.on('remove', (reaction, user) => this._paginationCheck(reaction, user, embedMessage));
 
-        pagination.on('end', () => embedMessage.edit('Session Ended'))
+        pagination.on('end', () => {
+            embedMessage.edit(`<@${this.message.author.id}>, Session Ended`)
+            embedMessage.suppressEmbeds();
+            embedMessage.reactions.removeAll()
+        })
     }
     //Function that needs to be called after creating instance of this class
     async init() {
