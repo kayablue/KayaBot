@@ -5,7 +5,7 @@ const CommandManager = require('../modules/commandManager');
 module.exports = new Command('help', 'Shows what the command do or list of all commands', '', 'bot', (message, args) => {
     if (!args.length) {
         //Code if no command specified
-        let categories = ['hypixel', 'minecraft', 'moderation','bot', 'nsfw', 'osu', 'music'];
+        let categories = ['hypixel', 'minecraft', 'moderation','bot', 'nsfw', 'osu', 'music', 'misc'];
         let commandsFormatted = 'Type k!help <command> to get the info about command \n\n';
 
         function ucFirst(word) {
