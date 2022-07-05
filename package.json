@@ -9,7 +9,7 @@
   "author": "kayablue",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.8.0",
     "axios": "^0.19.2",
     "date-fns": "^2.13.0",
     "discord.js": "^12.2.0",
